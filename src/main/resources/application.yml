@@ -1,0 +1,54 @@
+server:
+  port: 9010
+
+spring:
+  servlet:
+    multipart:
+      location: /Users/shaoshikai/Downloads
+  # ========  主数据源配置  ========
+#  datasource:
+#    primary:
+#      url: jdbc:mysql://192.168.88.89:3306/test?characterEncoding=utf8&useUnicode=true&autoReconnect=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai&allowMultiQueries=true
+#      username: user-admin
+#      password: ceshi
+#      driverClassName: com.mysql.jdbc.Driver
+  # ========  shardingsphere数据源配置  ========
+  shardingsphere:
+    datasource:
+      names: master
+      master:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driverClassName: com.mysql.jdbc.Driver
+        url: jdbc:mysql://192.168.88.89:3306/test?characterEncoding=utf8&useUnicode=true&autoReconnect=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai&allowMultiQueries=true
+        username: user-admin
+        password: ceshi
+    ## 分表策略 其中 newest_ad_account 为逻辑表 分表主要取决与create_date字段
+    sharding:
+      tables:
+        #  newest_ad_account 的策略
+        newest_ad_account:
+          # 配置下面dynamic.table后，此处将不起作用。
+          actual-data-nodes: master.newest_ad_account$->{[202006,202008]}
+          table-strategy:
+            standard:
+              sharding-column: gmt_modified
+              # 自定义分表算法
+              precise-algorithm-class-name: cn.skyjilygao.shardingsphere.config.PreciseSharingTableAlgorithmOfAlarmhis
+              range-algorithm-class-name: cn.skyjilygao.shardingsphere.config.PreciseSharingTableAlgorithmOfAlarmhis
+      # 开启后可以看到真实路由SQL，但是日志太多了，正式环境不保留
+    props:
+      sql:
+        show: true
+        # 是否在日志中打印简单风格的 SQL。
+        simple: true
+
+
+# 配置水平分表随着日期每月递增的逻辑表名，配置后不走分片建，全局查询时能够自动获取最新的逻辑表分片，多个通过逗号分隔
+dynamic:
+  table:
+    names: newest_ad_account
+    startDate: 2020-07
+
+mybatis:
+  mapper-locations: classpath*:mapper/*Mapper.xml
+  type-aliases-package: cn.skyjilygao.shardingsphere.entity

@@ -1,0 +1,82 @@
+server:
+  port: 8096
+  max-http-header-size: 4048576
+  tomcat:
+    max-http-form-post-size: -1
+
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  mvc:
+    static-path-pattern: /**
+  resources:
+    static-locations: classpath:/META-INF/resources/,classpath:/static/,classpath:/public/,file:${web.upload-path},/images,/upload,file:${adorado.file.root},
+  profiles:
+    active: dev
+  redis:
+    database: 0
+    host: 192.168.88.150
+    port: 6379
+    lettuce:
+      pool:
+        max-active: 8
+        max-wait: 1ms
+        max-idle: 8
+        min-idle: 0
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://192.168.88.89:3306/test?characterEncoding=utf8&useUnicode=true&autoReconnect=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai&allowMultiQueries=true
+    username: user-admin
+    password: ceshi
+    druid:
+      #  初始化大小
+      initial-size: 5
+      # 连接池的最大数据库连接数。设为0表示无限制。一般把maxActive设置成可能的并发量就行了
+      max-active: 20
+      # 最小等待(空闲)连接中的数量
+      min-idle: 5
+      # 最大等待(空闲)连接中的数量,设 0 为没有限制 maxIdle is deprecated
+#      max-idle: 50
+      # 最大等待毫秒数, 单位为 ms, 如果超过此时间将接到异常,设为-1表示无限制
+      max-wait: 60000
+      # 开启池的prepared statement 池功能
+      pool-prepared-statements: true
+      max-pool-prepared-statement-per-connection-size: 20
+      max-open-prepared-statements: 20
+      # SQL查询,用来验证从连接池取出的连接,在将连接返回给调用者之前.如果指定, 则查询必须是一个SQL SELECT并且必须返回至少一行记录
+      validation-query: SELECT 1
+      # 验证从连接池取出的连接超时时间 单位为ms
+      validation-query-timeout: 3000
+      # 申请连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能
+      test-on-borrow: false
+      # 归还连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能
+      test-on-return: false
+      # 指明连接是否被空闲连接回收器(如果有)进行检验.如果检测失败, 则连接将被从池中去除, 注意: 设置为true后如果要生效,validationQuery参数必须设置为非空字符串
+      test-while-idle: true
+      # # 配置多久进行一次检测，检测需要关闭的空闲连接 单位毫秒
+      time-between-eviction-runs-millis: 60000
+      # 配置一个连接在池中最小生存的时间，单位是毫秒
+      min-evictable-idle-time-millis: 30000
+      # 配置一个连接在池中最大生存的时间，单位是毫秒
+      max-evictable-idle-time-millis: 2400000
+
+
+mybatis:
+  mapper-locations: classpath*:mapper/*Mapper.xml
+  type-aliases-package: cn.skyjilygao.shardingsphere.entity
+
+crm:
+  base_host: "http://st.js1931.com"
+  #adaccount_spend_url: "${crm.base_host}/Planning/fb_consume_data/get_fb_consume"
+  adaccount_spend_url: "${crm.base_host}/Planning/fb_consume_data/get_fb_consume"
+  adaccount_spend_callback_url_suffix: "/Planning/fb_consume_data/get_fb_consume"
+  adaccount_spend_status_notification: "${crm.base_host}/Planning/fb_consume/close_account_call_back"
+  access_token: EAAXZBwRbZCCloBAAEZCfqSSBNYmMDM5GtHt8HeIhf0aoG50ZBPbCgy6TSVeK189EvbZBPx9xWUdZCvQ1OioCJMpVUez5kaZAj2vF0GWBkQQ8ZC4f4WvWvaWvUwtxVxUA8sdnjnDcAJnZBYwGiJ2m7hrnnQgE5O0kcCojcm6ZCkfJeXnyYiCnoJFcNZC
+  business-id: 1908319566106737,358381234804601
+  business-user-id: 151457155920142
+  oe_name_list: "${crm.base_host}/Planning/fb_consume_data/get_oe_group_obtain_cid"
+
+adorado:
+  file:
+    ip-white-list: "files/source/ip-white-list.txt"
